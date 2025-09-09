@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lucky Picker — Random Name Selector</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎉</text></svg>">
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="background"></div>
+
+  <header class="site-header">
+    <div class="brand">
+      <div class="logo">🎯</div>
+      <div class="titles">
+        <h1>Lucky Picker</h1>
+        <p class="subtitle">Load names, draw winners—no repeats, all fun.</p>
+      </div>
+    </div>
+    <div class="stats" aria-live="polite">
+      <div class="stat">
+        <span class="label">Loaded</span>
+        <span class="value" id="stat-total">0</span>
+      </div>
+      <div class="stat">
+        <span class="label">Remaining</span>
+        <span class="value" id="stat-remaining">0</span>
+      </div>
+      <div class="stat">
+        <span class="label">Picked</span>
+        <span class="value" id="stat-picked">0</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- 1) DRAW CARD FIRST (full width within container) -->
+    <section class="panel card action-panel">
+      <h2>Draw</h2>
+      <div class="selected-name" id="selected-name" aria-live="polite">No name selected yet</div>
+      <div class="action-buttons">
+        <button id="btn-draw" class="btn xl success">Draw Next Name</button>
+        <button id="btn-undo" class="btn warn" title="Undo last draw">Undo</button>
+        <button id="btn-reset" class="btn danger" title="Reset pool">Reset</button>
+        <button id="btn-export-picked" class="btn" title="Download picked names CSV">Export Picked</button>
+        <button id="btn-export-remaining" class="btn" title="Download remaining names CSV">Export Remaining</button>
+      </div>
+      <p class="note">Names are drawn without repetition until you reset.</p>
+    </section>
+
+    <!-- 2) REMAINING/PICKED SECTION CENTERED -->
+    <section class="panel card list-panel">
+      <div class="lists">
+        <div class="list-col">
+          <div class="list-header">
+            <h3>Remaining</h3>
+            <div class="list-actions">
+              <button id="btn-reset-remaining" class="btn sm" title="Rebuild Remaining from Original minus Picked">Reset Remaining</button>
+              <button id="btn-clear-remaining" class="btn sm danger" title="Empty Remaining list">Clear Remaining</button>
+            </div>
+          </div>
+          <div id="list-remaining" class="name-list center" aria-live="polite"></div>
+        </div>
+        <div class="list-col">
+          <div class="list-header">
+            <h3>Picked</h3>
+            <div class="list-actions">
+              <button id="btn-reset-picked" class="btn sm" title="Return all Picked back to Remaining">Reset Picked</button>
+              <button id="btn-remove-picked" class="btn sm danger" title="Delete all Picked from dataset">Remove Picked</button>
+            </div>
+          </div>
+          <div id="list-picked" class="name-list center" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3) IMPORT/INSERT AT THE BOTTOM -->
+    <section class="panel card input-panel">
+      <h2>Import Names</h2>
+      <p class="help-text">Upload a file (.xlsx, .xls, .csv, .txt, .docx) or paste names below (one per line or comma-separated).</p>
+
+      <div class="uploader">
+        <label for="file-input" class="dropzone" id="dropzone">
+          <div class="dropzone-inner">
+            <div class="dz-icon">📄</div>
+            <div class="dz-text">
+              <strong>Drag & Drop</strong> your file here<br />
+              <span class="muted">or click to browse</span>
+            </div>
+          </div>
+          <input id="file-input" type="file" accept=".xlsx,.xls,.csv,.txt,.docx" multiple />
+        </label>
+        <div class="file-list" id="file-list" aria-live="polite"></div>
+      </div>
+
+      <div class="manual-input">
+        <label for="names-input" class="sr-only">Paste names</label>
+        <textarea id="names-input" placeholder="e.g.
+Alice
+Bob
+Charlie
+Diana
+" spellcheck="false"></textarea>
+        <div class="input-actions">
+          <button id="btn-add-manual" class="btn primary">Add Names</button>
+          <button id="btn-clear-manual" class="btn subtle" title="Clear input">Clear</button>
+        </div>
+      </div>
+
+      <div class="options">
+        <label class="toggle">
+          <input type="checkbox" id="opt-trim-duplicates" checked />
+          <span>Automatically remove duplicates</span>
+        </label>
+        <label class="toggle">
+          <input type="checkbox" id="opt-case-sensitive" />
+          <span>Case-sensitive duplicates</span>
+        </label>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Built for fair, fun, and professional draws.</span>
+    <span class="sep">•</span>
+    <span>Supports .xlsx, .xls, .csv, .txt, .docx</span>
+  </footer>
+
+  <!-- Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <!-- App -->
+  <script src="./script.js"></script>
+</body>
+</html>
